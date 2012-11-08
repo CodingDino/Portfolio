@@ -4,7 +4,7 @@ Hello there! I'm Sarah, and I'm a game programmer. I'm originally from the USA, 
 
 In addition to game programming, I'm a writer in my free time and keep a blog over at Jiyambi.blogspot.com. It covers all sorts of subjects, but primarily focuses on the games industry from both a player and developer standpoint.
 
-You'll find more information in my portfolio's wiki section (github.com/Jiyambi/Portfolio/Wiki), or you can dive right into my code samples in the code section. I've also included a plain text version of my resume (you can download the formatted pdf in this section).
+You'll find more information in my portfolio's wiki section (github.com/Jiyambi/Portfolio/Wiki), or you can dive right into my code samples in the code section. I've also included a plain text version of my resume (you can download the formatted pdf in the code section).
 
 -------------------------------------------------
 
@@ -25,7 +25,7 @@ Additional Coursework in Business Law, Marketing, and Entrepreneurship
 
 Experience
 
-7/2011 – Present   |   Quality Assurance Intern   |   Intel, Hillsboro OR
+7/2011 – 8/2012   |   Quality Assurance Intern   |   Intel, Hillsboro OR
 Performed quality assurance testing for TV Flash plugins developed by Intel. Created bash scripts to assist in team’s testing efficiency. Assisted in documenting testing procedures and best known methods. Created a Windows PowerShell based tool to compare drivers and other system details between two systems.
 
 4/2010 – 12/2010   |   Lead Addon Developer   |   www.wow-pro.com
