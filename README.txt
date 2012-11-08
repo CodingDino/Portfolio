@@ -4,7 +4,7 @@ Hello there! I'm Sarah, and I'm a game programmer. I'm sometimes known around th
 
 In addition to game programming, I'm a writer in my free time and keep a blog over at http://jiyambi.blogspot.com. It covers all sorts of subjects, but primarily focuses on the games industry from both a player and developer standpoint.
 
-You'll find more information in my portfolio's wiki section (https://github.com/Jiyambi/Portfolio/Wiki), or you can dive right into my code samples in the code section. I've also included a plain text version of my resume (you can download the formatted pdf in the code section).
+You'll find more information in my portfolio's wiki section (https://github.com/Jiyambi/Portfolio/wiki), or you can dive right into my code samples in the code section. I've also included a plain text version of my resume (you can download the formatted pdf in the code section).
 
 -------------------------------------------------
 
