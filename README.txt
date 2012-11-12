@@ -1,4 +1,5 @@
-Sarah Herzog - Online Portfolio
+﻿Sarah Herzog - Online Portfolio
+
 
 Hello there! I'm Sarah, and I'm a game programmer. I'm sometimes known around the internet as Jiyambi. I'm originally from the USA, but am currently pursuing a masters degree in Computer Games Technology from University of Abertay, Dundee, in Scotland. I've had a quite colorful journey into the world of game development, with brief stops in the fields of chemical engineering, education, and information technology along the way. I've had a massive variety of experiences in my young life, and I'd love to bring my wealth of life experiences to bear working on games!
 
