@@ -7,7 +7,7 @@ In addition to game programming, I'm a writer in my free time and keep a blog ov
 
 You'll find more information in my portfolio's wiki section (https://github.com/Jiyambi/Portfolio/wiki), or you can dive right into my code samples in the code section. I've also included a plain text version of my CV (you can download the formatted pdf for both my CV and resume in the code section).
 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
 SARAH HERZOG
 Game Programmer
 github.com/Jiyambi/Portfolio | 07936 434640 | sarah.ann.herzog@gmail.com
