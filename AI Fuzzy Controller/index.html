@@ -1,0 +1,2101 @@
+<html>
+    <head>
+        <title>AI Coursework - Sarah Herzog</title>
+        <style>
+        body {
+            margin:50px;
+            padding:0px;
+        }
+        
+        canvas {
+            outline:0;
+            border:1px solid #000;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        </style>
+    </head>
+    <body>
+		
+		<!-- Utility Scripts -->
+        <!--<script src="Rule.js"></script>-->
+        <script src="AI.js"></script>
+        <script src="FuzzyController.js"></script>
+        <script src="Utility.js"></script>
+        <script src="Car.js"></script>
+        <script src="Line.js"></script>
+        <script src="Readout.js"></script>
+        <script src="Track.js"></script>
+        <script src="Results.js"></script>
+        <script src="Game.js"></script>
+        <script src="GeneticAlgorithm.js"></script>
+		
+		<!-- Overview -->
+		<a name="top"></a>
+		<table width="1200px">
+			<tr>
+				<td>
+					<h1>AI Coursework - Sarah Herzog</h1>
+					<hr />
+					This webpage is an application demonstrating a fuzzy logic controller via a simple racing game. From this page, the user can edit
+					the fuzzy logic parameters and see their results in the game. The user can choose to run the AI through a set track, or to manually
+					control the track during the game's opperation. After the run, the game will display the statistics from it's previous run.
+					<br /><br />
+					Additionally, a controller can be automatically created using a genetic algorithm optimisation. This controller can then be exported and 
+					imported into the main game applicaiton. See the specific instructions in the sections below for more information.
+					<br /><br />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h2>Table of Contents</h2>
+					<br />1. <a href="#position_membership">Line Position Membership Function</a>
+					<br />2. <a href="#velocity_membership">Line Velocity Membership Function</a>
+					<br />3. <a href="#action_membership">Action Membership Function</a>
+					<br />4. <a href="#testing">Testing</a>
+					<br />5. <a href="#rules">Rules</a>
+					<br />6. <a href="#impexp">Controller Import/Export</a>
+					<br />7. <a href="#game">Game</a>
+					<br />8. <a href="#results">Results</a>
+					<br />9. <a href="#genetics">Genetic Algorithm Tuning</a>
+				</td>
+			</tr>
+		</table>
+		
+		<!-- Line Position Membership Function -->
+		<a name="position_membership"> </a>
+		<table width="1200px">
+			<tr>
+				<td colspan="10">
+					<hr />
+					<h2>Line Position Membership Function</h2>
+					<a href="#top">[Back to the top]</a><br /><br />
+					Position of the line with AI car as origin, in units of pixels.<br /><br />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<h3>Position = Far Left</h3>
+				</td>
+				<td colspan="2">
+					<h3>Position = Left</h3>
+				</td>
+				<td colspan="2">
+					<h3>Position = Center</h3>
+				</td>
+				<td colspan="2">
+					<h3>Position = Right</h3>
+				</td>
+				<td colspan="2">
+					<h3>Position = Far Right</h3>
+				</td>
+			</tr>
+			<tr>
+				<td>
+				</td>
+				<td>
+				</td>
+				<td>
+					Left Base Point:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_1_lbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('position', '1', 'lbp',  this.value)"/>
+				</td>
+				<td>
+					Left Base Point:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_2_lbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('position', '2', 'lbp',  this.value)"/>
+				</td>
+				<td>
+					Left Base Point:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_3_lbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('position', '3', 'lbp',  this.value)"/>
+				</td>
+				<td>
+					Left Base Point:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_4_lbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('position', '4', 'lbp',  this.value)"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				</td>
+				<td colspan="2">
+					-600 <input id="input_position_memfunc_1_lbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('position', '1', 'lbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_position_memfunc_2_lbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('position', '2', 'lbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_position_memfunc_3_lbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('position', '3', 'lbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_position_memfunc_4_lbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('position', '4', 'lbp',  this.value)" /> 600
+				</td>
+			</tr>
+			<tr>
+				<td>
+				</td>
+				<td>
+				</td>
+				<td>
+					Left Peak Point:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_1_lpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('position', '1', 'lpp',  this.value)"/>
+				</td>
+				<td>
+					Left Peak Point:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_2_lpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('position', '2', 'lpp',  this.value)"/>
+				</td>
+				<td>
+					Left Peak Point:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_3_lpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('position', '3', 'lpp',  this.value)"/>
+				</td>
+				<td>
+					Left Peak Point:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_4_lpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('position', '4', 'lpp',  this.value)"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				</td>
+				<td colspan="2">
+					-600 <input id="input_position_memfunc_1_lpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('position', '1', 'lpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_position_memfunc_2_lpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('position', '2', 'lpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_position_memfunc_3_lpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('position', '3', 'lpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_position_memfunc_4_lpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('position', '4', 'lpp',  this.value)" /> 600
+				</td>
+			</tr>
+			<tr>
+				<td>
+				</td>
+				<td>
+				</td>
+				<td>
+					Left Curviness:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_1_lc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('position', '1', 'lc',  this.value)"/>
+				</td>
+				<td>
+					Left Curviness:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_2_lc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('position', '2', 'lc',  this.value)"/>
+				</td>
+				<td>
+					Left Curviness:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_3_lc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('position', '3', 'lc',  this.value)"/>
+				</td>
+				<td>
+					Left Curviness:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_4_lc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('position', '4', 'lc',  this.value)"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				</td>
+				<td colspan="2">
+					0 <input id="input_position_memfunc_1_lc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('position', '1', 'lc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_position_memfunc_2_lc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('position', '2', 'lc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_position_memfunc_3_lc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('position', '3', 'lc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_position_memfunc_4_lc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('position', '4', 'lc',  this.value)" /> 10
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Right Peak Point:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_0_rpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('position', '0', 'rpp',  this.value)"/>
+				</td>
+				<td>
+					Right Peak Point:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_1_rpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('position', '1', 'rpp',  this.value)"/>
+				</td>
+				<td>
+					Right Peak Point:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_2_rpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('position', '2', 'rpp',  this.value)"/>
+				</td>
+				<td>
+					Right Peak Point:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_3_rpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('position', '3', 'rpp',  this.value)"/>
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					-600 <input id="input_position_memfunc_0_rpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('position', '0', 'rpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_position_memfunc_1_rpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('position', '1', 'rpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_position_memfunc_2_rpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('position', '2', 'rpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_position_memfunc_3_rpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('position', '3', 'rpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Right Base Point:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_0_rbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('position', '0', 'rbp',  this.value)"/>
+				</td>
+				<td>
+					Right Base Point:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_1_rbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('position', '1', 'rbp',  this.value)"/>
+				</td>
+				<td>
+					Right Base Point:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_2_rbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('position', '2', 'rbp',  this.value)"/>
+				</td>
+				<td>
+					Right Base Point:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_3_rbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('position', '3', 'rbp',  this.value)"/>
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					-600 <input id="input_position_memfunc_0_rbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('position', '0', 'rbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_position_memfunc_1_rbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('position', '1', 'rbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_position_memfunc_2_rbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('position', '2', 'rbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_position_memfunc_3_rbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('position', '3', 'rbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Right Curviness:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_0_rc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('position', '0', 'rc',  this.value)"/>
+				</td>
+				<td>
+					Right Curviness:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_1_rc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('position', '1', 'rc',  this.value)"/>
+				</td>
+				<td>
+					Right Curviness:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_2_rc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('position', '2', 'rc',  this.value)"/>
+				</td>
+				<td>
+					Right Curviness:
+				</td>
+				<td>
+					<input id="readout_position_memfunc_3_rc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('position', '3', 'rc',  this.value)"/>
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					0 <input id="input_position_memfunc_0_rc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('position', '0', 'rc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_position_memfunc_1_rc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('position', '1', 'rc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_position_memfunc_2_rc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('position', '2', 'rc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_position_memfunc_3_rc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('position', '3', 'rc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+				</td>
+			</tr>
+			<tr>
+				<td colspan="10">
+					<canvas id="canvas_position_memfunc"></canvas>
+				</td>
+			</tr>
+			<tr> <!-- Test function input -->
+				<td colspan="10">
+					<h3>Test Position</h3>
+					In this section, you can manually test the membership functions for this variable. Enter a test position below, and the program will determine the membership
+					for each fuzzy set.
+					<br /><br />
+					Test Position: <input id="input_position_test" type="number" value="0" size="5" min="-600" max="600" onchange="testMemFunc('position', this.value)"/>
+					<br /><br />
+				</td>
+			</tr>
+			<tr> <!-- Test function result -->
+				<td>
+					Far Left:
+				</td>
+				<td>
+					<input type="number" value="0" size="5" id="readout_position_test_0"/>
+				</td>
+				<td>
+					Left:
+				</td>
+				<td>
+					<input type="number" value="0" size="5" id="readout_position_test_1"/>
+				</td>
+				<td>
+					Center:
+				</td>
+				<td>
+					<input type="number" value="0" size="5" id="readout_position_test_2"/>
+				</td>
+				<td>
+					Right:
+				</td>
+				<td>
+					<input type="number" value="0" size="5" id="readout_position_test_3"/>
+				</td>
+				<td>
+					Far Right:
+				</td>
+				<td>
+					<input type="number" value="0" size="5" id="readout_position_test_4"/>
+				</td>
+			</tr>
+		</table>
+		
+		<!-- Line Velocity Membership Function -->
+		<a name="velocity_membership"> </a>
+		<table width="1200px">
+			<tr>
+				<td colspan="10">
+					<hr />
+					<h2>Line Velocity Membership Function</h2>
+					<a href="#top">[Back to the top]</a><br /><br />
+					<i>Relative</i> velocity of the line with respect to the AI car, in units of pixels/second. Combines line velocity (set by track) and AI car velocity (controlled by AI).<br /><br />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<h3>Velocity = Large Left</h3>
+				</td>
+				<td colspan="2">
+					<h3>Velocity = Left</h3>
+				</td>
+				<td colspan="2">
+					<h3>Velocity = None</h3>
+				</td>
+				<td colspan="2">
+					<h3>Velocity = Right</h3>
+				</td>
+				<td colspan="2">
+					<h3>Velocity = Large Right</h3>
+				</td>
+			</tr>
+			<tr>
+				<td>
+				</td>
+				<td>
+				</td>
+				<td>
+					Left Base Point:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_1_lbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('velocity', '1', 'lbp',  this.value)"/>
+				</td>
+				<td>
+					Left Base Point:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_2_lbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('velocity', '2', 'lbp',  this.value)"/>
+				</td>
+				<td>
+					Left Base Point:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_3_lbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('velocity', '3', 'lbp',  this.value)"/>
+				</td>
+				<td>
+					Left Base Point:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_4_lbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('velocity', '4', 'lbp',  this.value)"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				</td>
+				<td colspan="2">
+					-600 <input id="input_velocity_memfunc_1_lbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('velocity', '1', 'lbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_velocity_memfunc_2_lbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('velocity', '2', 'lbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_velocity_memfunc_3_lbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('velocity', '3', 'lbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_velocity_memfunc_4_lbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('velocity', '4', 'lbp',  this.value)" /> 600
+				</td>
+			</tr>
+			<tr>
+				<td>
+				</td>
+				<td>
+				</td>
+				<td>
+					Left Peak Point:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_1_lpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('velocity', '1', 'lpp',  this.value)"/>
+				</td>
+				<td>
+					Left Peak Point:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_2_lpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('velocity', '2', 'lpp',  this.value)"/>
+				</td>
+				<td>
+					Left Peak Point:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_3_lpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('velocity', '3', 'lpp',  this.value)"/>
+				</td>
+				<td>
+					Left Peak Point:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_4_lpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('velocity', '4', 'lpp',  this.value)"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				</td>
+				<td colspan="2">
+					-600 <input id="input_velocity_memfunc_1_lpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('velocity', '1', 'lpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_velocity_memfunc_2_lpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('velocity', '2', 'lpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_velocity_memfunc_3_lpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('velocity', '3', 'lpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_velocity_memfunc_4_lpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('velocity', '4', 'lpp',  this.value)" /> 600
+				</td>
+			</tr>
+			<tr>
+				<td>
+				</td>
+				<td>
+				</td>
+				<td>
+					Left Curviness:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_1_lc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('velocity', '1', 'lc',  this.value)"/>
+				</td>
+				<td>
+					Left Curviness:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_2_lc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('velocity', '2', 'lc',  this.value)"/>
+				</td>
+				<td>
+					Left Curviness:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_3_lc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('velocity', '3', 'lc',  this.value)"/>
+				</td>
+				<td>
+					Left Curviness:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_4_lc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('velocity', '4', 'lc',  this.value)"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				</td>
+				<td colspan="2">
+					0 <input id="input_velocity_memfunc_1_lc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('velocity', '1', 'lc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_velocity_memfunc_2_lc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('velocity', '2', 'lc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_velocity_memfunc_3_lc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('velocity', '3', 'lc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_velocity_memfunc_4_lc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('velocity', '4', 'lc',  this.value)" /> 10
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Right Peak Point:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_0_rpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('velocity', '0', 'rpp',  this.value)"/>
+				</td>
+				<td>
+					Right Peak Point:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_1_rpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('velocity', '1', 'rpp',  this.value)"/>
+				</td>
+				<td>
+					Right Peak Point:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_2_rpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('velocity', '2', 'rpp',  this.value)"/>
+				</td>
+				<td>
+					Right Peak Point:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_3_rpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('velocity', '3', 'rpp',  this.value)"/>
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					-600 <input id="input_velocity_memfunc_0_rpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('velocity', '0', 'rpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_velocity_memfunc_1_rpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('velocity', '1', 'rpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_velocity_memfunc_2_rpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('velocity', '2', 'rpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_velocity_memfunc_3_rpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('velocity', '3', 'rpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Right Base Point:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_0_rbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('velocity', '0', 'rbp',  this.value)"/>
+				</td>
+				<td>
+					Right Base Point:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_1_rbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('velocity', '1', 'rbp',  this.value)"/>
+				</td>
+				<td>
+					Right Base Point:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_2_rbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('velocity', '2', 'rbp',  this.value)"/>
+				</td>
+				<td>
+					Right Base Point:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_3_rbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('velocity', '3', 'rbp',  this.value)"/>
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					-600 <input id="input_velocity_memfunc_0_rbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('velocity', '0', 'rbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_velocity_memfunc_1_rbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('velocity', '1', 'rbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_velocity_memfunc_2_rbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('velocity', '2', 'rbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_velocity_memfunc_3_rbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('velocity', '3', 'rbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Right Curviness:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_0_rc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('velocity', '0', 'rc',  this.value)"/>
+				</td>
+				<td>
+					Right Curviness:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_1_rc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('velocity', '1', 'rc',  this.value)"/>
+				</td>
+				<td>
+					Right Curviness:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_2_rc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('velocity', '2', 'rc',  this.value)"/>
+				</td>
+				<td>
+					Right Curviness:
+				</td>
+				<td>
+					<input id="readout_velocity_memfunc_3_rc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('velocity', '3', 'rc',  this.value)"/>
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					0 <input id="input_velocity_memfunc_0_rc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('velocity', '0', 'rc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_velocity_memfunc_1_rc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('velocity', '1', 'rc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_velocity_memfunc_2_rc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('velocity', '2', 'rc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_velocity_memfunc_3_rc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('velocity', '3', 'rc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+				</td>
+			</tr>
+			<tr>
+				<td colspan="10">
+					<canvas id="canvas_velocity_memfunc"></canvas>
+				</td>
+			</tr>
+			
+			<tr> <!-- Test function input -->
+				<td colspan="10">
+					<h3>Test Velocity</h3>
+					In this section, you can manually test the membership functions for this variable. Enter a test velocity below, and the program will determine the membership
+					for each fuzzy set.
+					<br /><br />
+					Test Velocity: <input id="input_velocity_test" type="number" value="0" size="5" min="-600" max="600" onchange="testMemFunc('velocity', this.value)"/>
+					<br /><br />
+				</td>
+			</tr>
+			<tr> <!-- Test function result -->
+				<td>
+					Large Left:
+				</td>
+				<td>
+					<input type="number" value="0" size="5" id="readout_velocity_test_0"/>
+				</td>
+				<td>
+					Left:
+				</td>
+				<td>
+					<input type="number" value="0" size="5" id="readout_velocity_test_1"/>
+				</td>
+				<td>
+					None:
+				</td>
+				<td>
+					<input type="number" value="0" size="5" id="readout_velocity_test_2"/>
+				</td>
+				<td>
+					Right:
+				</td>
+				<td>
+					<input type="number" value="0" size="5" id="readout_velocity_test_3"/>
+				</td>
+				<td>
+					Large Right:
+				</td>
+				<td>
+					<input type="number" value="0" size="5" id="readout_velocity_test_4"/>
+				</td>
+			</tr>
+		</table>
+		
+		<!-- Action Membership Function -->
+		<a name="action_membership"> </a>
+		<table width="1200px">
+			<tr> <!-- Section Title -->
+				<td colspan="10">
+					<hr />
+					<h2>Action Membership Function</h2>
+					<a href="#top">[Back to the top]</a><br /><br />
+					Resulting velocity <i>change</i> of the <b>AI car</b>, in units of pixels/second. NOTE: Curviness for this section currenly bugged - all lines will be treated as curviness 0.<br /><br />
+				</td>
+			</tr>
+			<tr>  <!-- Column Titles -->
+				<td colspan="2">
+					<h3>Action = Extreme Left</h3>
+				</td>
+				<td colspan="2">
+					<h3>Action = Large Left</h3>
+				</td>
+				<td colspan="2">
+					<h3>Action = Left</h3>
+				</td>
+				<td colspan="2">
+					<h3>Action = Slight Left</h3>
+				</td>
+				<td colspan="2">
+					<h3>Action = None</h3>
+				</td>
+			</tr>
+			<tr>  <!-- Left Base Point label -->
+				<td>
+				</td>
+				<td>
+				</td>
+				<td>
+					Left Base Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_1_lbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '1', 'lbp',  this.value)"/>
+				</td>
+				<td>
+					Left Base Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_2_lbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '2', 'lbp',  this.value)"/>
+				</td>
+				<td>
+					Left Base Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_3_lbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '3', 'lbp',  this.value)"/>
+				</td>
+				<td>
+					Left Base Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_4_lbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '4', 'lbp',  this.value)"/>
+				</td>
+			</tr>
+			<tr>  <!-- Left Base Point slider -->
+				<td colspan="2">
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_1_lbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '1', 'lbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_2_lbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '2', 'lbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_3_lbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '3', 'lbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_4_lbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '4', 'lbp',  this.value)" /> 600
+				</td>
+			</tr>
+			<tr>  <!-- Left Peak Point label -->
+				<td>
+				</td>
+				<td>
+				</td>
+				<td>
+					Left Peak Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_1_lpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '1', 'lpp',  this.value)"/>
+				</td>
+				<td>
+					Left Peak Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_2_lpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '2', 'lpp',  this.value)"/>
+				</td>
+				<td>
+					Left Peak Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_3_lpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '3', 'lpp',  this.value)"/>
+				</td>
+				<td>
+					Left Peak Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_4_lpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '4', 'lpp',  this.value)"/>
+				</td>
+			</tr>
+			<tr>  <!-- Left Peak Point slider -->
+				<td colspan="2">
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_1_lpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '1', 'lpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_2_lpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '2', 'lpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_3_lpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '3', 'lpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_4_lpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '4', 'lpp',  this.value)" /> 600
+				</td>
+			</tr>
+			<tr>  <!-- Left Curve label -->
+				<td>
+				</td>
+				<td>
+				</td>
+				<td>
+					Left Curviness:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_1_lc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('action', '1', 'lc',  this.value)"/>
+				</td>
+				<td>
+					Left Curviness:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_2_lc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('action', '2', 'lc',  this.value)"/>
+				</td>
+				<td>
+					Left Curviness:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_3_lc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('action', '3', 'lc',  this.value)"/>
+				</td>
+				<td>
+					Left Curviness:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_4_lc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('action', '4', 'lc',  this.value)"/>
+				</td>
+			</tr>
+			<tr>  <!-- Left Curve slider -->
+				<td colspan="2">
+				</td>
+				<td colspan="2">
+					0 <input id="input_action_memfunc_1_lc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('action', '1', 'lc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_action_memfunc_2_lc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('action', '2', 'lc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_action_memfunc_3_lc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('action', '3', 'lc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_action_memfunc_4_lc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('action', '4', 'lc',  this.value)" /> 10
+				</td>
+			</tr>
+			<tr>  <!-- Right Peak Point label -->
+				<td>
+					Right Peak Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_0_rpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '0', 'rpp',  this.value)"/>
+				</td>
+				<td>
+					Right Peak Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_1_rpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '1', 'rpp',  this.value)"/>
+				</td>
+				<td>
+					Right Peak Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_2_rpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '2', 'rpp',  this.value)"/>
+				</td>
+				<td>
+					Right Peak Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_3_rpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '3', 'rpp',  this.value)"/>
+				</td>
+				<td>
+					Right Peak Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_4_rpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '4', 'rpp',  this.value)"/>
+				</td>
+			</tr>
+			<tr>  <!-- Right Peak Point slider -->
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_0_rpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '0', 'rpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_1_rpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '1', 'rpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_2_rpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '2', 'rpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_3_rpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '3', 'rpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_4_rpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '4', 'rpp',  this.value)" /> 600
+				</td>
+			</tr>
+			<tr>  <!-- Right Base Point label -->
+				<td>
+					Right Base Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_0_rbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '0', 'rbp',  this.value)"/>
+				</td>
+				<td>
+					Right Base Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_1_rbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '1', 'rbp',  this.value)"/>
+				</td>
+				<td>
+					Right Base Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_2_rbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '2', 'rbp',  this.value)"/>
+				</td>
+				<td>
+					Right Base Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_3_rbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '3', 'rbp',  this.value)"/>
+				</td>
+				<td>
+					Right Base Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_4_rbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '4', 'rbp',  this.value)"/>
+				</td>
+			</tr>
+			<tr>  <!-- Right Base Point slider -->
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_0_rbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '0', 'rbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_1_rbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '1', 'rbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_2_rbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '2', 'rbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_3_rbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '3', 'rbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_4_rbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '4', 'rbp',  this.value)" /> 600
+				</td>
+			</tr>
+			<tr>  <!-- Right Curve label -->
+				<td>
+					Right Curviness:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_0_rc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('action', '0', 'rc',  this.value)"/>
+				</td>
+				<td>
+					Right Curviness:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_1_rc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('action', '1', 'rc',  this.value)"/>
+				</td>
+				<td>
+					Right Curviness:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_2_rc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('action', '2', 'rc',  this.value)"/>
+				</td>
+				<td>
+					Right Curviness:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_3_rc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('action', '3', 'rc',  this.value)"/>
+				</td>
+				<td>
+					Right Curviness:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_4_rc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('action', '4', 'rc',  this.value)"/>
+				</td>
+			</tr>
+			<tr>  <!-- Right Curve slider -->
+				<td colspan="2">
+					0 <input id="input_action_memfunc_0_rc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('action', '0', 'rc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_action_memfunc_1_rc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('action', '1', 'rc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_action_memfunc_2_rc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('action', '2', 'rc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_action_memfunc_3_rc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('action', '3', 'rc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_action_memfunc_4_rc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('action', '4', 'rc',  this.value)" /> 10
+				</td>
+			</tr>
+			<tr>  <!-- Column Titles -->
+				<td colspan="2">
+					<h3>Action = Slight Right</h3>
+				</td>
+				<td colspan="2">
+					<h3>Action = Right</h3>
+				</td>
+				<td colspan="2">
+					<h3>Action = Large Right</h3>
+				</td>
+				<td colspan="2">
+					<h3>Action = Extreme Right</h3>
+				</td>
+				<td colspan="2">
+				</td>
+			</tr>
+			<tr>  <!-- Left Base Point label -->
+				<td>
+					Left Base Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_5_lbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '5', 'lbp',  this.value)"/>
+				</td>
+				<td>
+					Left Base Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_6_lbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '6', 'lbp',  this.value)"/>
+				</td>
+				<td>
+					Left Base Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_7_lbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '7', 'lbp',  this.value)"/>
+				</td>
+				<td>
+					Left Base Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_8_lbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '8', 'lbp',  this.value)"/>
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+			</tr>
+			<tr>  <!-- Left Base Point slider -->
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_5_lbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '5', 'lbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_6_lbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '6', 'lbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_7_lbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '7', 'lbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_8_lbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '8', 'lbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+				</td>
+			</tr>
+			<tr>  <!-- Left Peak Point label -->
+				<td>
+					Left Peak Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_5_lpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '5', 'lpp',  this.value)"/>
+				</td>
+				<td>
+					Left Peak Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_6_lpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '6', 'lpp',  this.value)"/>
+				</td>
+				<td>
+					Left Peak Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_7_lpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '7', 'lpp',  this.value)"/>
+				</td>
+				<td>
+					Left Peak Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_8_lpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '8', 'lpp',  this.value)"/>
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+			</tr>
+			<tr>  <!-- Left Peak Point slider -->
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_5_lpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '5', 'lpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_6_lpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '6', 'lpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_7_lpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '7', 'lpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_8_lpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '8', 'lpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+				</td>
+			</tr>
+			<tr>  <!-- Left Curve label -->
+				<td>
+					Left Curviness:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_5_lc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('action', '5', 'lc',  this.value)"/>
+				</td>
+				<td>
+					Left Curviness:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_6_lc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('action', '6', 'lc',  this.value)"/>
+				</td>
+				<td>
+					Left Curviness:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_7_lc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('action', '7', 'lc',  this.value)"/>
+				</td>
+				<td>
+					Left Curviness:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_8_lc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('action', '8', 'lc',  this.value)"/>
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+			</tr>
+			<tr>  <!-- Left Curve slider -->
+				<td colspan="2">
+					0 <input id="input_action_memfunc_5_lc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('action', '5', 'lc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_action_memfunc_6_lc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('action', '6', 'lc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_action_memfunc_7_lc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('action', '7', 'lc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_action_memfunc_8_lc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('action', '8', 'lc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+				</td>
+			</tr>
+			<tr>  <!-- Right Peak Point label -->
+				<td>
+					Right Peak Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_5_rpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '5', 'rpp',  this.value)"/>
+				</td>
+				<td>
+					Right Peak Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_6_rpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '6', 'rpp',  this.value)"/>
+				</td>
+				<td>
+					Right Peak Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_7_rpp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '7', 'rpp',  this.value)"/>
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+			</tr>
+			<tr>  <!-- Right Peak Point slider -->
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_5_rpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '5', 'rpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_6_rpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '6', 'rpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_7_rpp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '7', 'rpp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+				</td>
+				<td colspan="2">
+				</td>
+			</tr>
+			<tr>  <!-- Right Base Point label -->
+				<td>
+					Right Base Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_5_rbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '5', 'rbp',  this.value)"/>
+				</td>
+				<td>
+					Right Base Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_6_rbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '6', 'rbp',  this.value)"/>
+				</td>
+				<td>
+					Right Base Point:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_7_rbp" type="number" value="0" 
+							size="5" min="-600" max="600" onchange="inputUpdate('action', '7', 'rbp',  this.value)"/>
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+			</tr>
+			<tr>  <!-- Right Base Point slider -->
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_5_rbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '5', 'rbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_6_rbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '6', 'rbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+					-600 <input id="input_action_memfunc_7_rbp" type="range" value="0" 
+							size="25" min="-600" max="600" onchange="inputUpdate('action', '7', 'rbp',  this.value)" /> 600
+				</td>
+				<td colspan="2">
+				</td>
+				<td colspan="2">
+				</td>
+			</tr>
+			<tr>  <!-- Right Curve label -->
+				<td>
+					Right Curviness:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_5_rc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('action', '5', 'rc',  this.value)"/>
+				</td>
+				<td>
+					Right Curviness:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_6_rc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('action', '6', 'rc',  this.value)"/>
+				</td>
+				<td>
+					Right Curviness:
+				</td>
+				<td>
+					<input id="readout_action_memfunc_7_rc" type="number" value="0" 
+							size="5" min="0" max="10" onchange="inputUpdate('action', '7', 'rc',  this.value)"/>
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+			</tr>
+			<tr>  <!-- Right Curve slider -->
+				<td colspan="2">
+					0 <input id="input_action_memfunc_5_rc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('action', '5', 'rc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_action_memfunc_6_rc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('action', '6', 'rc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+					0 <input id="input_action_memfunc_7_rc" type="range" value="0" 
+							size="25" min="0" max="10" onchange="inputUpdate('action', '7', 'rc',  this.value)" /> 10
+				</td>
+				<td colspan="2">
+				</td>
+				<td colspan="2">
+				</td>
+			</tr>
+			<tr>  <!-- Canvas -->
+				<td colspan="10">
+					<canvas id="canvas_action_memfunc"></canvas>
+				</td>
+			</tr>
+			<tr>  <!-- Test function description -->
+				<td colspan="10">
+					<h3>Test Action</h3>
+					In this section, you can manually test the membership functions for this variable. Enter a test fuzzy membership for action below, and the program will determine the defuzzified velocity change the controller would suggest.
+					<br /><br />
+					Action Set: 
+					<select id="input_action_test_set" onchange="testDefuzzify()">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+					<br /><br />
+					Action Membership: <input id="input_action_test_value" type="number" value="0" size="5" onchange="testDefuzzify()"/>
+					<br /><br />
+					Action Result Value: <input id="input_action_test_result" type="number" value="0" size="5"/>
+					<br />
+					Action Result Area: <input id="input_action_test_area" type="number" value="0" size="5"/>
+					<br /><br />
+				</td>
+			</tr>
+		</table>
+		
+		<!-- Rules -->
+		<a name="rules"> </a>
+		<table width="1200px">
+			<tr>
+				<td>
+					<hr />
+					<h2>Rules</h2>
+					<a href="#top">[Back to the top]</a><br /><br />
+					These rules govern which sets from the position and velocity variables map to which sets from the action variables. For each combination of position and velocity, a rule can be chosen.<br /><br />
+				</td>
+			</tr>
+		</table>
+		<table width="1200px" border="1">
+			<tr>
+				<td colspan="2" rowspan="2">
+				</td>
+				<td colspan="5">
+				<h3>Line Position</h3>
+				</td>
+			</tr>
+			<tr>  <!-- TOP TITLES -->
+				<td>
+					Far Left
+				</td>
+				<td>
+					Left
+				</td>
+				<td>
+					Center
+				</td>
+				<td>
+					Right
+				</td>
+				<td>
+					Far Right
+				</td>
+			</tr>
+			<tr>  <!-- LARGE LEFT -->
+				<td rowspan="5">
+				<h3>Line Velocity</h3>
+				</td>
+				<td>
+					Large Left
+				</td>
+				<td>
+					<select id="readout_rules_0_0" onChange="ruleUpdate('0', '0', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_1_0" onChange="ruleUpdate('1', '0', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_2_0" onChange="ruleUpdate('2', '0', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_3_0" onChange="ruleUpdate('3', '0', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_4_0" onChange="ruleUpdate('4', '0', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+			</tr>
+			<tr>  <!-- LEFT -->
+				<td>
+					Left
+				</td>
+				<td>
+					<select id="readout_rules_0_1" onChange="ruleUpdate('0', '1', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_1_1" onChange="ruleUpdate('1', '1', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_2_1" onChange="ruleUpdate('2', '1', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_3_1" onChange="ruleUpdate('3', '1', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_4_1" onChange="ruleUpdate('4', '1', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+			</tr>		
+			<tr>  <!-- NONE -->
+				<td>
+					None
+				</td>
+				<td>
+					<select id="readout_rules_0_2"  onChange="ruleUpdate('0', '2', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_1_2"  onChange="ruleUpdate('1', '2', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_2_2"  onChange="ruleUpdate('2', '2', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_3_2"  onChange="ruleUpdate('3', '2', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_4_2"  onChange="ruleUpdate('4', '2', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+			</tr>		
+			<tr>  <!-- RIGHT -->
+				<td>
+					Right
+				</td>
+				<td>
+					<select id="readout_rules_0_3" onChange="ruleUpdate('0', '3', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_1_3" onChange="ruleUpdate('1', '3', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_2_3" onChange="ruleUpdate('2', '3', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_3_3"  onChange="ruleUpdate('3', '3', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_4_3"  onChange="ruleUpdate('4', '3', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+			</tr>		
+			<tr>  <!-- LARGE RIGHT -->
+				<td>
+					Large Right
+				</td>
+				<td>
+					<select id="readout_rules_0_4"  onChange="ruleUpdate('0', '4', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_1_4" onChange="ruleUpdate('1', '4', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_2_4"  onChange="ruleUpdate('2', '4', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_3_4" onChange="ruleUpdate('3', '4', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+				<td>
+					<select id="readout_rules_4_4" onChange="ruleUpdate('4', '4', this.value)">
+						<option value=0>Extreme Left</option>
+						<option value=1>Large Left</option>
+						<option value=2>Left</option>
+						<option value=3>Slight Left</option>
+						<option value=4>None</option>
+						<option value=5>Slight Right</option>
+						<option value=6>Right</option>
+						<option value=7>Large Right</option>
+						<option value=8>Extreme Right</option>
+					</select>
+				</td>
+			</tr>		
+		</table>
+	
+		<!-- Testing -->
+		<a name="testing"> </a>
+		<table width="1200px">
+			<tr>
+				<td>
+					<hr />
+					<h2>Testing</h2>
+					<a href="#top">[Back to the top]</a><br /><br />
+					In this section, the user can enter a test input to the overall system and get a recommended velocity change. This tests all parts of the controller at once.
+					<br /><br />
+					Position: <input id="input_testing_position" type="number" value="0" size="5" onchange="testOverall()"/>
+					<br /><br />
+					Velocity: <input id="input_testing_velocity" type="number" value="0" size="5" onchange="testOverall()"/>
+					<br />
+					Recommended Velocity Change: <input id="input_testing_action" type="number" value="0" size="5"/>
+				</td>
+			</tr>
+		</table>
+		
+		<!-- Controller Import / Export -->
+		<a name="impexp"> </a>
+		<table width="1200px">
+			<tr>
+				<td>
+					<hr />
+					<h2>Controller Import / Export</h2>
+					<a href="#top">[Back to the top]</a>
+					<br /><br />
+					
+					This section allows configured controllers to be saved or loaded. This is done via a plain text stream, so the user needs to save this text somewhere of his or her own choice.
+					<br /><br />
+					<button type="button" id="button_export" onclick="exportController()">Export</button>
+					<textarea  id="input_export" type="text" value="" cols="40" rows="5"></textarea>
+					<br />
+					<button type="button" id="button_import" onclick="importController()">Import</button>
+					<textarea  id="input_import" type="text" value="" cols="40" rows="5"></textarea>
+				</td>
+			</tr>
+		</table>
+		
+		<!-- Game -->
+		<a name="game"> </a>
+		<table width="1200px">
+			<tr>
+				<td>
+					<hr />
+					<h2>Game</h2>
+					<a href="#top">[Back to the top]</a>
+					<br /><br />
+					
+					Control the track manually using the arrow keys. Left moves the track left, right moves it right. Up and down increase or decrease the 
+					speed of the track movement. You can also use 1, 2, and 3 to set track movment speed.
+					<br /><br />
+					<button type="button" id="game_button_user" onclick="game_user_control = true; startGame();">User-Controlled</button>
+					<br /><button type="button" id="game_button_auto" onclick="game_user_control = false; startGame();">Automated Track</button>
+				</td>
+			</tr>
+			<tr>  <!-- Canvas -->
+				<td>
+					<canvas id="canvas_game"></canvas>
+				</td>
+			</tr>
+		</table>
+	
+		<!-- Results -->
+		<a name="results"> </a>
+		<table width="1200px">
+			<tr>
+				<td>
+					<hr />
+					<h2>Results</h2>
+					<a href="#top">[Back to the top]</a><br /><br />
+					Once the track above has completed, you can view the results here. The export button will display the results as a stream of plain text, 
+					which can be entered into the user's data processing program of choice.
+					<br /><br />
+					<button type="button" id="button_results_export" onclick="exportResults()">Export</button>
+					<textarea  id="input_results_export" type="text" value="" cols="40" rows="5"></textarea>
+					<br /><br />
+				</td>
+			</tr>
+			<tr>  <!-- Canvas -->
+				<td>
+					<canvas id="canvas_results"></canvas>
+				</td>
+			</tr>
+		</table>
+		
+		<!-- Genetic Algorithms -->
+		<a name="genetics"> </a>
+		<table width="1200px">
+			<tr>
+				<td>
+					<hr />
+					<h2>Genetic Algorithm Tuning</h2>
+					<a href="#top">[Back to the top]</a>
+					<br /><br />
+					
+					Uses a genetic algorithm to tune the controller. Run until you get a result within desired range, then export from here and import into the main controller above.
+					<br /><br />
+					<button type="button" id="genetics_button_start" onclick="this_genetics.clear(); startGenetics();">Start</button> 
+					<br /><button type="button" id="genetics_button_stop" onclick="stopCalculations();">Stop and Export</button>
+					<textarea  id="input_genetics_export" type="text" value="" cols="40" rows="5"></textarea>
+				</td>
+			</tr>
+			<tr>  <!-- Canvas -->
+				<td>
+					<canvas id="canvas_genetics"></canvas>
+				</td>
+			</tr>
+		</table>
+		
+		<!-- Game Scripts -->
+		<script>memfuncInit();</script>
+        <script>initialiseGame();</script>
+		<script>initialiseGenetics();</script>
+    </body>
+</html>
