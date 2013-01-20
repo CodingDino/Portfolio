@@ -1,0 +1,104 @@
+﻿Build started 20-Jan-13 04:43:43 PM.
+     1>Project "D:\My Documents\GitHub\Portfolio\DirectX Sample Scene\VisualStudio Project\Engine\Engine.vcxproj" on node 2 (build target(s)).
+     1>PrepareForBuild:
+         Creating directory "D:\My Documents\GitHub\Portfolio\DirectX Sample Scene\VisualStudio Project\Debug\".
+       InitializeBuildStatus:
+         Creating "Debug\Engine.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt BitmapClass.cpp CameraClass.cpp Coord.cpp CPUClass.cpp D3dClass.cpp FontClass.cpp FontShaderClass.cpp FPSClass.cpp GraphicsClass.cpp InputClass.cpp LightClass.cpp LightShaderClass.cpp Main.cpp ModelClass.cpp ParticleShaderClass.cpp ParticleSystemClass.cpp PlanetClass.cpp PositionClass.cpp SoundClass.cpp SystemClass.cpp Textclass.cpp TextureClass.cpp TextureShaderClass.cpp TimerClass.cpp Util.cpp
+         Util.cpp
+         TimerClass.cpp
+         TextureShaderClass.cpp
+         TextureClass.cpp
+         Textclass.cpp
+         SystemClass.cpp
+         SoundClass.cpp
+         PositionClass.cpp
+         PlanetClass.cpp
+         ParticleSystemClass.cpp
+         ParticleShaderClass.cpp
+         ModelClass.cpp
+         Main.cpp
+         LightShaderClass.cpp
+         LightClass.cpp
+         InputClass.cpp
+         GraphicsClass.cpp
+         FPSClass.cpp
+         FontShaderClass.cpp
+         FontClass.cpp
+         Generating Code...
+         Compiling...
+         D3dClass.cpp
+         CPUClass.cpp
+         Coord.cpp
+         CameraClass.cpp
+         BitmapClass.cpp
+         Generating Code...
+       ManifestResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\Engine.exe.embed.manifest.res" Debug\Engine_manifest.rc 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\My Documents\GitHub\Portfolio\DirectX Sample Scene\VisualStudio Project\Debug\Engine.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Engine.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\My Documents\GitHub\Portfolio\DirectX Sample Scene\VisualStudio Project\Debug\Engine.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\My Documents\GitHub\Portfolio\DirectX Sample Scene\VisualStudio Project\Debug\Engine.lib" /MACHINE:X86 Debug\Engine.exe.embed.manifest.res
+         Debug\BitmapClass.obj
+         Debug\CameraClass.obj
+         Debug\Coord.obj
+         Debug\CPUClass.obj
+         Debug\D3dClass.obj
+         Debug\FontClass.obj
+         Debug\FontShaderClass.obj
+         Debug\FPSClass.obj
+         Debug\GraphicsClass.obj
+         Debug\InputClass.obj
+         Debug\LightClass.obj
+         Debug\LightShaderClass.obj
+         Debug\Main.obj
+         Debug\ModelClass.obj
+         Debug\ParticleShaderClass.obj
+         Debug\ParticleSystemClass.obj
+         Debug\PlanetClass.obj
+         Debug\PositionClass.obj
+         Debug\SoundClass.obj
+         Debug\SystemClass.obj
+         Debug\Textclass.obj
+         Debug\TextureClass.obj
+         Debug\TextureShaderClass.obj
+         Debug\TimerClass.obj
+         Debug\Util.obj
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\Engine.exe.embed.manifest" /manifest Debug\Engine.exe.intermediate.manifest
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\Engine.exe.embed.manifest.res" Debug\Engine_manifest.rc 
+       LinkEmbedManifest:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\My Documents\GitHub\Portfolio\DirectX Sample Scene\VisualStudio Project\Debug\Engine.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Engine.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\My Documents\GitHub\Portfolio\DirectX Sample Scene\VisualStudio Project\Debug\Engine.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\My Documents\GitHub\Portfolio\DirectX Sample Scene\VisualStudio Project\Debug\Engine.lib" /MACHINE:X86 Debug\Engine.exe.embed.manifest.res
+         Debug\BitmapClass.obj
+         Debug\CameraClass.obj
+         Debug\Coord.obj
+         Debug\CPUClass.obj
+         Debug\D3dClass.obj
+         Debug\FontClass.obj
+         Debug\FontShaderClass.obj
+         Debug\FPSClass.obj
+         Debug\GraphicsClass.obj
+         Debug\InputClass.obj
+         Debug\LightClass.obj
+         Debug\LightShaderClass.obj
+         Debug\Main.obj
+         Debug\ModelClass.obj
+         Debug\ParticleShaderClass.obj
+         Debug\ParticleSystemClass.obj
+         Debug\PlanetClass.obj
+         Debug\PositionClass.obj
+         Debug\SoundClass.obj
+         Debug\SystemClass.obj
+         Debug\Textclass.obj
+         Debug\TextureClass.obj
+         Debug\TextureShaderClass.obj
+         Debug\TimerClass.obj
+         Debug\Util.obj
+         Engine.vcxproj -> D:\My Documents\GitHub\Portfolio\DirectX Sample Scene\VisualStudio Project\Debug\Engine.exe
+       FinalizeBuildStatus:
+         Deleting file "Debug\Engine.unsuccessfulbuild".
+         Touching "Debug\Engine.lastbuildstate".
+     1>Done Building Project "D:\My Documents\GitHub\Portfolio\DirectX Sample Scene\VisualStudio Project\Engine\Engine.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:12.12
